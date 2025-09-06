@@ -59,3 +59,29 @@ const updateUser = async (req, res, next) => {
     }
 };
 
+// Delete specified user
+const deleteUser = async (req, res, next) => {
+    try {
+        //Find specified user to delete
+        const user = await Users.findByPk(req.params.id);
+
+        //Error if user not found
+        if(!user) return res.status(404).json({ error: 'User not found' });
+
+        //Delete user
+        await user.destroy();
+        res.status(204).end();
+    } catch (error) {
+        next(error);
+    }
+};
+
+//Export functions for use in routes
+module.exports = {
+    getAllUsers,
+    getUserById,
+    createUser,
+    updateUser,
+    deleteUser
+};
+
