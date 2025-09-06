@@ -26,3 +26,36 @@ const getUserById = async (req, res, next) => {
         next(error);
     }
 }
+
+// Create a new user
+const createUser = async (req, res, next) => {
+    try {
+        //Get name and email from input
+        const { name, email } = req.body;
+        const newUser = await Users.create({ name, email });
+        res.status(201).json(newUser);
+    } catch(error) {
+        next(error);
+    }
+}
+
+// Update specified user
+const updateUser = async (req, res, next) => {
+    try { 
+        //Find user by Id
+        const user = await Users.findByPk(req.params.id);
+
+        //If user doesn't exist, return error
+        if (!user) return res.status(404).json({ error: 'User not found' });
+
+        //If found get input
+        const { name, email } = req.body;
+
+        //update object
+        await user.update({ name, email });
+        res.status(200).json(user);
+    } catch (error) {
+        next(error);
+    }
+};
+
