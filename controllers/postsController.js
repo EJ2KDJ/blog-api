@@ -1,4 +1,4 @@
-const {Posts, Users} = require('../sequelize/models');
+const {Posts, Users, Categories, PostCategory} = require('../sequelize/models');
 
 // Get all posts from database
 const getAllPosts = async (req, res, next) => {
@@ -7,6 +7,9 @@ const getAllPosts = async (req, res, next) => {
         const posts = await Posts.findAll({
             attributes: ['title', 'userId']
         });
+
+        //If no posts, return error
+        if (!posts) return res.status(404).json({ error: 'No posts found' });
         res.status(200).json(posts);
     } catch (error) {
         next(error);
@@ -29,17 +32,57 @@ const getPostById = async (req, res, next) => {
 
 // Create a new post
 const createPost = async (req, res, next) => {
+    const t = await Posts.sequelize.transaction();
     try {
-        //Get title, content, and userId from input
+        //Get title, content, userId, category from input
         const { title, content, name} = req.body;
+        const catInput = req.body.category.toLowerCase() || req.body.categories.toLowerCase();
 
-        //Finds userId base on name input
-        const user = await Users.findPK({ where: { name } });
+        //Find user by name input
+        const user = await Users.findOne({ where: { name } });
 
-        //Error if nothing returned
-        if (!user) return res.status(404).json({error: 'User not found'});
-        const uploadPost = await Posts.create({title, content, userId: user.id});
-        res.status(201).json(uploadPost);
+        //If user doesn't exist, return error
+        if (!user) return res.status(404).json({ error: 'User not found' });
+
+        
+
+        //(Fail safe) If title, content, or name are missing return error
+        if (!title || !content || !name) {
+            return res.status(400).json({ error: 'title, content and name are required' });
+        }
+
+        //Create category from user input
+        const newPost = await Posts.create({ title, content, userId: user.id }, {transaction:t});
+
+        //Process category/categories input ---
+        const catNames = Array.isArray(catInput) ? //checks if catInput is an array of categories or a single category
+        catInput.map(s => s.trim()).filter(Boolean) : //removes whitespaces and empty strings
+        (catInput ? [catInput.trim()] : ['General']);  //If single category, trim whitespace and if empty set to 'General'
+
+        const findOrCreatePromises = catNames.map(name => Categories.findOrCreate({
+             where: { name }, defaults: { name }, transaction: t 
+            })); //Finds or creates categories in the Categories table keeping them in the same transaction
+
+        const createdOrFound = await Promise.all(findOrCreatePromises); //Waits for all promises to resolve and store in variable
+
+        const categoryInstances = createdOrFound.map(r => Array.isArray(r) ? r[0] : r); //maps to model instances
+    
+        //Associate categories with the new post
+        if (typeof newPost.addCategories === 'function') {
+            await newPost.addCategories(categoryInstances, { transaction: t });
+        } else {
+            await Promise.all(categoryInstances.map(cat =>
+            PostCategory.create({ postId: newPost.id, categoryId: cat.id }, { transaction: t })
+        ));
+        }
+
+        await t.commit();
+
+        const created = await Posts.findByPk(newPost.id, {
+        include: [{ model: Categories, through: { attributes: [] } }]
+        });
+        res.status(201).json(created);
+   
     }  catch (error) {
         next(error);
     }
