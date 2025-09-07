@@ -1,4 +1,5 @@
-const {Users, Posts} = require('../sequelize/models');
+const {Users} = require('./sequelize/models/users');
+const {Posts} = require('./sequelize/models/posts');
 
 // Get all users from database
 const getAllUsers = async (req, res, next) => {

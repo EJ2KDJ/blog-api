@@ -6,6 +6,11 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+const { userRouter, postsRouter } = require('./routes/Routes');
+
+app.use('/users', userRouter);
+app.use('/posts', postsRouter);
+
 app.get('/', (req, res) => {
     res.send('Welcome to the API');
 });

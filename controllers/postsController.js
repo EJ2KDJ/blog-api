@@ -1,4 +1,7 @@
-const {Posts, Users, Categories, PostCategory} = require('../sequelize/models');
+const {Posts} = require('./sequelize/models/posts');
+const {Users} = require('./sequelize/models/users');
+const {Categories} = require('./sequelize/models/categories');
+const {PostCategory} = require('./sequelize/models/postcategory');
 
 // Get all posts from database
 const getAllPosts = async (req, res, next) => {
@@ -25,6 +28,10 @@ const getPostById = async (req, res, next) => {
                 attributes: ['title', 'content', 'createdAt', 'updatedAt'],
                 include: [{ model: Users, attributes: ['name'] }]
             });
+
+        // If post doesn't exist, return error
+        if (!post) return res.status(404).json({ error: 'Post not found' });
+        res.status(200).json(post);
     } catch (error) {
         next(error);
     }
