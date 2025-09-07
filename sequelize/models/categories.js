@@ -15,7 +15,7 @@ module.exports = (sequelize, DataTypes) => {
       // foreignKey should match the field name in the join model (postcategory.js uses categoriesId)
       Categories.belongsToMany(models.Posts, {
         through: 'PostCategory',
-        foreignKey: 'categoriesId'
+        foreignKey: 'categoryId'
       });
     }
   }

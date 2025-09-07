@@ -4,7 +4,7 @@ const getAllPosts = async (req, res, next) => {
     try {
         //Return all posts with only title and the user who posted it
         const posts = await Posts.findAll({
-            attributes: ['title', 'userId']
+            attributes: ['postTitle', 'userId']
         });
 
         //If no posts, return error
@@ -18,10 +18,10 @@ const getAllPosts = async (req, res, next) => {
 // Get post by ID from database
 const getPostById = async (req, res, next) => {
     try {
-        // Returns full post with title, content, when it was created/updated, and the name of the user who posted it
+        // Returns full post with title, body, when it was created/updated, and the name of the user who posted it
         const post = await Posts.findByPk(req.params.id,
             {
-                attributes: ['title', 'content', 'createdAt', 'updatedAt'],
+                attributes: ['postTitle', 'body', 'createdAt', 'updatedAt'],
                 include: [{ model: Users, attributes: ['name'] }]
             });
 
@@ -37,8 +37,8 @@ const getPostById = async (req, res, next) => {
 const createPost = async (req, res, next) => {
     const t = await Posts.sequelize.transaction();
     try {
-        //Get title, content, userId, category from input
-        const { title, content, name} = req.body;
+        //Get title, body, userId, category from input
+        const { postTitle, body, name} = req.body;
         const catInput = req.body.category.toLowerCase() || req.body.categories.toLowerCase();
 
         //Find user by name input
@@ -49,13 +49,13 @@ const createPost = async (req, res, next) => {
 
         
 
-        //(Fail safe) If title, content, or name are missing return error
-        if (!title || !content || !name) {
-            return res.status(400).json({ error: 'title, content and name are required' });
+        //(Fail safe) If title, body, or name are missing return error
+        if (!postTitle || !body || !name) {
+            return res.status(400).json({ error: 'title, body and name are required' });
         }
 
         //Create category from user input
-        const newPost = await Posts.create({ title, content, userId: user.id }, {transaction:t});
+        const newPost = await Posts.create({ postTitle, body, userId: user.id }, {transaction:t});
 
         //Process category/categories input ---
         const catNames = Array.isArray(catInput) ? //checks if catInput is an array of categories or a single category
@@ -98,11 +98,11 @@ const updatePost = async (req, res, next) => {
         const post = await Posts.findByPk(req.params.id);
         if(!post) return res.status(404).json({error: 'Post not found'});
 
-        //Get title and content from input
-        const { title, content } = req.body;
+        //Get title and body from input
+        const { postTitle, body } = req.body;
 
         //Update object
-        const updatedPost = await post.update({ title, content });
+        const updatedPost = await post.update({ postTitle, body });
         res.status(201).json(updatedPost);
     } catch (error) {
         next(error);
