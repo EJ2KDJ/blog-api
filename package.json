@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/EJ2KDJ/blog-api/issues"
   },
-  "homepage": "https://github.com/EJ2KDJ/blog-api#readme"
+  "homepage": "https://github.com/EJ2KDJ/blog-api#readme",
+  "dependencies": {
+    "cors": "^2.8.5"
+  }
 }

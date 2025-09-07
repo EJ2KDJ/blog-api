@@ -1,16 +1,23 @@
 const express = require('express');
-const bodyParser = require('body-parser');
+const cors = require('cors');
 const app = express();
 
-
+app.use(cors());
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+app.get('/', (req, res) => {
+    res.send('Welcome to the API');
+});
+
+const PORT = process.env.PORT || 4001;
+app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+});
 
 app.use((err, req, res, next) => {
     console.error(err.stack);
     res.status(500).json({ error: 'Internal Server Error'});
 });
 
-
-app.listen(3000, () => {
-    console.log(`Server running on port ${3000}`);
-});
+module.exports = app;
