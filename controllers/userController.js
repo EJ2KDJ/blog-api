@@ -1,5 +1,4 @@
-const {Users} = require('./sequelize/models/users');
-const {Posts} = require('./sequelize/models/posts');
+const { Users, Posts } = require('../sequelize/models');
 
 // Get all users from database
 const getAllUsers = async (req, res, next) => {
@@ -20,8 +19,8 @@ const getUserById = async (req, res, next) => {
             attributes: ['id', 'name', 'email', 'createdAt', 'updatedAt'],
             include: [{ model: Posts }]
             });
-        // If user doesn't exist, return error
-        if (!user) return req.status(404).json({ error: 'User not found' });
+    // If user doesn't exist, return error
+    if (!user) return res.status(404).json({ error: 'User not found' });
         res.status(200).json(user);
     } catch (error) {
         next(error);

@@ -11,9 +11,11 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      Category.belongsToMany(models.Post, {
+      // models.Posts is the correct key (modelName: 'Posts') exported by models/index
+      // foreignKey should match the field name in the join model (postcategory.js uses categoriesId)
+      Categories.belongsToMany(models.Posts, {
         through: 'PostCategory',
-        foreignKey: 'categoryId'
+        foreignKey: 'categoriesId'
       });
     }
   }

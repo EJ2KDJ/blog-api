@@ -3,8 +3,8 @@ const userRouter = express.Router();
 const postsRouter = express.Router();
 
 // Import User controller functions
-const { getAllUsers, getUserById, createUser, updateUser, deleteUser } = require('../controllers/userController');
-const { getAllPosts, getPostById, createPost, updatePost, deletePost } = require('../controllers/postsController');
+const { getAllUsers, getUserById, createUser, updateUser, deleteUser } = require('../controllers/userController.js');
+const { getAllPosts, getPostById, createPost, updatePost, deletePost } = require('../controllers/postsController.js');
 
 // Define routes and link to controller functions
 
