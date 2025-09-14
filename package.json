@@ -4,7 +4,7 @@
   "description": "Personal Blog API showcasing basic CRUD (Create, Read, Update, Delete) functions.",
   "main": "server.js",
   "scripts": {
-    "test": "mocha"
+    "test": "mocha test/**/*.js --timeout 10000 --exit"
   },
   "repository": {
     "type": "git",
@@ -17,9 +17,11 @@
   },
   "homepage": "https://github.com/EJ2KDJ/blog-api#readme",
   "dependencies": {
-    "chai": "^6.0.1",
-    "chai-http": "^5.1.2",
-    "cors": "^2.8.5",
-    "mocha": "^11.7.2"
+    "cors": "^2.8.5"
+  },
+  "devDependencies": {
+    "chai": "^4.5.0",
+    "chai-http": "^4.4.0",
+    "mocha": "^10.8.2"
   }
 }

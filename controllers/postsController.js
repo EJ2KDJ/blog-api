@@ -1,4 +1,5 @@
 const {Posts, Users, Categories, PostCategory} = require('../sequelize/models');
+
 // Get all posts from database
 const getAllPosts = async (req, res, next) => {
     try {

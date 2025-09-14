@@ -32,6 +32,11 @@ const createUser = async (req, res, next) => {
     try {
         //Get name and email from input
         const { name, email } = req.body;
+
+        if (!name || !email || name.trim() === '' || email.trim() === '') {
+            return res.status(400).json({ error: 'Name and email are required' });
+        }
+        
         const newUser = await Users.create({ name, email });
         res.status(201).json(newUser);
     } catch(error) {
