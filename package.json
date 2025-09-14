@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/EJ2KDJ/blog-api#readme",
   "dependencies": {
-    "cors": "^2.8.5"
+    "cors": "^2.8.5",
+    "mocha": "^11.7.2"
   }
 }
