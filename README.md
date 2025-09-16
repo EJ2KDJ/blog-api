@@ -1,6 +1,6 @@
 # Blog API
 
-A RESTful API for a personal blog application built with Node.js, Express, and PostgreSQL. This API provides CRUD operations for users, posts, and categories with proper database relationships.
+A raw backend (no UI) RESTful API for a personal blog application built with Node.js, Express, and PostgreSQL. This API provides CRUD operations for users, posts, and categories with proper database relationships. 
 
 ## Features
 
